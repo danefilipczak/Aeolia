@@ -2,11 +2,13 @@
 
 var ac = new(window.AudioContext || window.webkitAudioContext)();
 
-var MiniSampler = function(audioContext, nn) {
+var MiniSampler = function(audioContext, detune) {
 	this.source;
 	this.audioCtx = audioContext;
 	this.getData();
 	this.source.start();
+	this.detune = detune || 0;
+	// this.twelfthRootOfTwo = 0.05946309436;
 
 
 
@@ -27,7 +29,8 @@ MiniSampler.prototype.getData = function() {
 
 		self.audioCtx.decodeAudioData(audioData, function(buffer) {
 				self.source.buffer = buffer;
-
+				console.log(1 + (self.twelfthRootOfTwo * self.detune))
+				self.source.playbackRate.value = midiRatio(self.detune);
 				self.source.connect(self.audioCtx.destination);
 				self.source.loop = true;
 				console.log('decoded')
@@ -46,6 +49,10 @@ MiniSampler.prototype.stop = function(){
 	this.source.stop();
 }
 
+
+function midiRatio(nn){
+	return Math.pow(Math.pow(2, nn), 1/12);
+}
 
 
 // var source = 1;
