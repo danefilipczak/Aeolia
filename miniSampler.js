@@ -1,13 +1,18 @@
 // define variables
 
-var ac = new(window.AudioContext || window.webkitAudioContext)();
 
-var MiniSampler = function(audioContext, detune) {
+
+var MiniSampler = function(path_, detune, audioContext, gainNode_) {
 	this.source;
+	this.path = path_;
 	this.audioCtx = audioContext;
+	this.gainNode = gainNode_;
 	this.getData();
 	this.source.start();
 	this.detune = detune || 0;
+
+
+
 	// this.twelfthRootOfTwo = 0.05946309436;
 
 
@@ -18,8 +23,9 @@ MiniSampler.prototype.getData = function() {
 	var self = this;
 	this.source = this.audioCtx.createBufferSource();
 	var request = new XMLHttpRequest();
+	// console.log([self.path, 'requestpath'])
 
-	request.open('GET', 'samples/CAS3.wav', true);
+	request.open('GET', self.path, true);
 
 	request.responseType = 'arraybuffer';
 
@@ -29,15 +35,15 @@ MiniSampler.prototype.getData = function() {
 
 		self.audioCtx.decodeAudioData(audioData, function(buffer) {
 				self.source.buffer = buffer;
-				console.log(1 + (self.twelfthRootOfTwo * self.detune))
+				// console.log(1 + (self.twelfthRootOfTwo * self.detune))
 				self.source.playbackRate.value = midiRatio(self.detune);
-				self.source.connect(self.audioCtx.destination);
+				self.source.connect(self.gainNode);
 				self.source.loop = true;
 				console.log('decoded')
 			},
 
 			function(e) {
-				console.log("Error with decoding audio data" + e.err);
+				console.log("Error with decoding audio data " + e.err);
 			});
 
 	}
@@ -45,8 +51,8 @@ MiniSampler.prototype.getData = function() {
 	request.send();
 }
 
-MiniSampler.prototype.stop = function(){
-	this.source.stop();
+MiniSampler.prototype.stop = function(when){
+	this.source.stop(this.audioCtx.currentTime + when);
 }
 
 
