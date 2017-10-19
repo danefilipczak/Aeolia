@@ -1,10 +1,5 @@
 
-var ac = new(window.AudioContext || window.webkitAudioContext)();
 
-Number.prototype.linlin = function (in_min, in_max, out_min, out_max) {
-	//map a linear range to another linear range
-  return (this - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
 
 var CorAnglais = function(audioContext){
 	//range from 40 to 70
@@ -18,17 +13,17 @@ var CorAnglais = function(audioContext){
 
 
 	this.samples = [
-		'CE3',
-		'CG3',
-		'CAS3',
-		'CCS4',
-		'CE4',
-		'CG4',
-		'CAS4',
-		'CCS5',
-		'CE5',
-		'CG5',
-		'CAS5',
+		'samples/corAnglais/cresc/CE3.wav',
+		'samples/corAnglais/cresc/CG3.wav',
+		'samples/corAnglais/cresc/CAS3.wav',
+		'samples/corAnglais/cresc/CCS4.wav',
+		'samples/corAnglais/cresc/CE4.wav',
+		'samples/corAnglais/cresc/CG4.wav',
+		'samples/corAnglais/cresc/CAS4.wav',
+		'samples/corAnglais/cresc/CCS5.wav',
+		'samples/corAnglais/cresc/CE5.wav',
+		'samples/corAnglais/cresc/CG5.wav',
+		'samples/corAnglais/cresc/CAS5.wav',
 	]	
 }
 
