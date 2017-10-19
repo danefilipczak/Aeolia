@@ -11,13 +11,13 @@ Plays a note, the timbre of which is determed by the current `switch` setting.
 
 Stops a currently sustaining note. (see: `.sustain()`)
 
-### `.pan(value)`
+### `.pan(value, when)`
 
 
 
 - `value` is a number between -1 (full left) and 1 (full right)
 
-### `.gain(value)`
+### `.gain(value, when)`
 
 - `value` is a midi note number within the range of the instrument.
 

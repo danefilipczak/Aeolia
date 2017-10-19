@@ -39,6 +39,11 @@ MiniSampler.prototype.getData = function() {
 				self.source.playbackRate.value = midiRatio(self.detune);
 				self.source.connect(self.gainNode);
 				self.source.loop = true;
+				// self.source.loopStart = 1;
+				// self.source.loopEnd = 3;
+				self.source.onended = function(event){
+					console.log('end')
+				}
 				console.log('decoded')
 			},
 

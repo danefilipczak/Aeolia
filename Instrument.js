@@ -60,3 +60,27 @@ Instrument.prototype.stop = function(when){
 	this.sampler.stop(lag);
 	
 }
+
+
+Instrument.prototype.gain = function(value_, when){
+
+	var lag = when || 0.1;
+	var value = value_;
+
+	if(value <= 0){
+		value = 0.000000001
+	}
+
+	this.gainNode.gain.cancelScheduledValues(this.audioCtx.currentTime);
+	this.gainNode.gain.exponentialRampToValueAtTime(value, this.audioCtx.currentTime + lag);
+
+}
+
+Instrument.prototype.pan = function(value, when){
+	
+	var self = this;
+	var lag = when || 0.1;
+	this.panNode.pan.cancelScheduledValues(this.audioCtx.currentTime);
+	self.panNode.pan.linearRampToValueAtTime(value, self.audioCtx.currentTime + lag);
+
+}
