@@ -1,7 +1,4 @@
-
-
-
-var CorAnglais = function(audioContext){
+var CorAnglais = function(audioContext) {
 	//range from 40 to 70
 	this.range = {
 		low: 40,
@@ -24,12 +21,12 @@ var CorAnglais = function(audioContext){
 		'samples/corAnglais/cresc/CE5.wav',
 		'samples/corAnglais/cresc/CG5.wav',
 		'samples/corAnglais/cresc/CAS5.wav',
-	]	
+	]
 }
 
 CorAnglais.prototype = Object.create(Instrument.prototype);
 CorAnglais.prototype.constructor = CorAnglais;
-
-
-
-
+CorAnglais.prototype.range = {
+	low: 40,
+	high: 70
+}
