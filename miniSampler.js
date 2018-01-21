@@ -2,13 +2,14 @@
 
 
 
-var MiniSampler = function(path_, detune, audioContext, gainNode_) {
+var MiniSampler = function(path_, detune, audioContext, gainNode_, parent_) {
 	this.source;
 	this.path = path_;
+	this.parent = parent_;
 	this.audioCtx = audioContext;
 	this.gainNode = gainNode_;
 	this.getData();
-	this.source.start();
+	// this.source.start();
 	this.detune = detune || 0;
 
 
@@ -20,9 +21,10 @@ var MiniSampler = function(path_, detune, audioContext, gainNode_) {
 }
 
 MiniSampler.prototype.getData = function() {
-	var self = this;
+	var self = this;	
 	this.source = this.audioCtx.createBufferSource();
 	var request = new XMLHttpRequest();
+	// console.log(self.path)
 	// console.log([self.path, 'requestpath'])
 
 	request.open('GET', self.path, true);
@@ -44,7 +46,7 @@ MiniSampler.prototype.getData = function() {
 				self.source.onended = function(event){
 					console.log('end')
 				}
-				console.log('decoded')
+				self.parent.logProgress();
 			},
 
 			function(e) {
@@ -56,7 +58,12 @@ MiniSampler.prototype.getData = function() {
 	request.send();
 }
 
-MiniSampler.prototype.stop = function(when){
+MiniSampler.prototype.play = function(){
+	this.source.start();
+}
+
+MiniSampler.prototype.stop = function(when_){
+	var when = when_ || 0;
 	this.source.stop(this.audioCtx.currentTime + when);
 }
 
