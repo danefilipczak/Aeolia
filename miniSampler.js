@@ -4,11 +4,13 @@
 
 var MiniSampler = function(path_, detune, audioContext, gainNode_, parent_) {
 	this.source;
+	this.buffer;
 	this.path = path_;
 	this.parent = parent_;
 	this.audioCtx = audioContext;
 	this.gainNode = gainNode_;
 	this.getData();
+	this.hasFired=false;
 	
 	// this.source.start();
 	this.detune = detune || 0;
@@ -26,8 +28,8 @@ var MiniSampler = function(path_, detune, audioContext, gainNode_, parent_) {
 
 MiniSampler.prototype.getData = function() {
 	var self = this;
-	this.source;
-	this.buffer;
+	// this.source;
+	
 	var request = new XMLHttpRequest();
 	// console.log(self.path)
 	// console.log([self.path, 'requestpath'])
@@ -39,6 +41,8 @@ MiniSampler.prototype.getData = function() {
 
 	request.onload = function() {
 		var audioData = request.response;
+		
+		
 		self.parent.logProgress();
 
 		self.audioCtx.decodeAudioData(audioData, function(buffer) {
@@ -69,7 +73,7 @@ MiniSampler.prototype.play = function() {
 	// self.source.loopStart = 1;
 	// self.source.loopEnd = 3;
 	self.source.onended = function(event) {
-		console.log('end')
+		// console.log('end')
 	}
 
 	this.gainNode.gain.exponentialRampToValueAtTime(this.parent.gain, this.audioCtx.currentTime + this.parent.attack);

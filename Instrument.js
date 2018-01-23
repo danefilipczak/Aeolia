@@ -27,9 +27,9 @@ var Instrument = function(audioContext, numSwitches) {
 	for (var i = 0; i < this.samples.length; i++) {
 		this.samples[i] = new Array(numSwitches);
 	}
-	this.buildSamples();
+	// this.buildSamples();
 
-	this.numSamplers = (this.range.high-this.range.low)*this.numSwitches;
+	this.numSamplers = (this.range.high-this.range.low+1)*this.numSwitches;
 
 
 
@@ -37,7 +37,6 @@ var Instrument = function(audioContext, numSwitches) {
 
 Instrument.prototype.logProgress = function() {
 	this.progress++;
-	console.log(this.progress)
 	var progress = this.progress/this.numSamplers;
 	this.onProgress(progress);
 	if(progress>=1){
@@ -46,7 +45,7 @@ Instrument.prototype.logProgress = function() {
 }
 
 Instrument.prototype.onProgress = function(progress){
-	console.log(progress)
+	// console.log(progress)
 }
 
 Instrument.prototype.onLoad = function(){
@@ -91,35 +90,35 @@ Instrument.prototype.createSampler = function(nn, ks) {
 
 
 
-Instrument.prototype.play = function(nn, when) {
+// Instrument.prototype.play = function(nn, when) {
 
-	if (nn > this.range.high || nn < this.range.low) {
-		console.log('that note\'s out of range - this instrument can play from ' + this.range.low + ' to ' + this.range.high);
-		if (this.sampler) {
-			this.stop()
-		};
-		return;
-	}
+// 	if (nn > this.range.high || nn < this.range.low) {
+// 		console.log('that note\'s out of range - this instrument can play from ' + this.range.low + ' to ' + this.range.high);
+// 		if (this.sampler) {
+// 			this.stop()
+// 		};
+// 		return;
+// 	}
 
-	if (this.sampler) {
-		this.stop();
-	}
-	var lag = when || 0.1;
-	var scale = nn.linlin(this.range.low, this.range.high, 0, this.samples.length - 1);
-	var index = Math.round(scale);
-	var detune = Math.round((scale - index).linlin(0, this.samples.length - 1, this.range.low, this.range.high) - this.range.low);
-	// var path = 'samples/' + this.samples[index] + '.wav';
-	var path = this.samples[index];
-	console.log({
-		'path': path,
-		'index': index,
-		'detune': detune,
-		'scale': scale
-	})
+// 	if (this.sampler) {
+// 		this.stop();
+// 	}
+// 	var lag = when || 0.1;
+// 	var scale = nn.linlin(this.range.low, this.range.high, 0, this.samples.length - 1);
+// 	var index = Math.round(scale);
+// 	var detune = Math.round((scale - index).linlin(0, this.samples.length - 1, this.range.low, this.range.high) - this.range.low);
+// 	// var path = 'samples/' + this.samples[index] + '.wav';
+// 	var path = this.samples[index];
+// 	console.log({
+// 		'path': path,
+// 		'index': index,
+// 		'detune': detune,
+// 		'scale': scale
+// 	})
 
-	this.sampler = new MiniSampler(path, detune, this.audioCtx, this.gainNode, this)
+// 	this.sampler = new MiniSampler(path, detune, this.audioCtx, this.gainNode, this)
 
-}
+// }
 
 
 
@@ -170,19 +169,19 @@ Instrument.prototype.hush = function() {
 }
 
 
-Instrument.prototype.gain = function(value_, when) {
+// Instrument.prototype.gain = function(value_, when) {
 
-	var lag = when || 0.1;
-	var value = value_;
+// 	var lag = when || 0.1;
+// 	var value = value_;
 
-	if (value <= 0) {
-		value = 0.000000001
-	}
+// 	if (value <= 0) {
+// 		value = 0.000000001
+// 	}
 
-	this.gainNode.gain.cancelScheduledValues(this.audioCtx.currentTime);
-	this.gainNode.gain.exponentialRampToValueAtTime(value, this.audioCtx.currentTime + lag);
+// 	this.gainNode.gain.cancelScheduledValues(this.audioCtx.currentTime);
+// 	this.gainNode.gain.exponentialRampToValueAtTime(value, this.audioCtx.currentTime + lag);
 
-}
+// }
 
 Instrument.prototype.pan = function(value, when) {
 
