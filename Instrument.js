@@ -15,24 +15,24 @@ var Instrument = function(audioContext, numSwitches) {
 	this.panNode = this.audioCtx.createStereoPanner();
 	this.panNode.connect(this.audioCtx.destination);
 
-
 	this.progress = 0;
-	this.gain = 1;
+	this.switch = 0; //current keyswitch
 
+	this.gain = 1;
 	this.attack = 1;
 	this.release = 1;
+	
+	/* 
+		samplers are housed as a two dimensional array
+		the first index is the note number, the second is the keyswitch
+		*/
 
-	this.switch = 0; //current keyswitch
-	this.samples = new Array(127);
+	this.samples = new Array(127); 
 	for (var i = 0; i < this.samples.length; i++) {
 		this.samples[i] = new Array(numSwitches);
 	}
-	// this.buildSamples();
 
 	this.numSamplers = (this.range.high-this.range.low+1)*this.numSwitches;
-
-
-
 }
 
 Instrument.prototype.logProgress = function() {
@@ -55,28 +55,11 @@ Instrument.prototype.onLoad = function(){
 
 Instrument.prototype.buildSamples = function() {
 	//fill your samples array up with instances of MiniSampler
-
 	for (var nn = this.range.low; nn <= this.range.high; nn++) {
 		for (var ks = 0; ks < this.numSwitches; ks++) {
-			// console.log(linlin())
-			// console.log(linlin(nn, this.range.low, this.range.high, 0, this.paths[ks].length - 1))
-			// var scale = nn.linlin(this.range.low, this.range.high, 0, this.paths[ks].length - 1);
-			// var index = Math.round(scale);
-			// var detune = Math.round((scale - index).linlin(0, this.paths.length - 1, this.range.low, this.range.high) - this.range.low);
-			// var path = this.paths[ks][index];
-			// console.log({
-			// 	'path': path,
-			// 	'index': index,
-			// 	// 'detune': detune,
-			// 	'scale': scale
-			// })
-
-			// this.samples[nn][ks] = new MiniSampler(path, detune, this.audioCtx, this.gainNode, this)
 			this.samples[nn][ks] = this.createSampler(nn, ks);
 		}
 	}
-
-
 }
 
 
@@ -85,40 +68,8 @@ Instrument.prototype.createSampler = function(nn, ks) {
 	var index = Math.round(scale);
 	var detune = Math.round((scale - index).linlin(0, this.paths[ks].length - 1, this.range.low, this.range.high) - this.range.low);
 	var path = this.paths[ks][index];
-	return new MiniSampler(path, detune, this.audioCtx, this.gainNode, this);
+	return new MiniSampler(path, detune, this.audioCtx, this);
 }
-
-
-
-// Instrument.prototype.play = function(nn, when) {
-
-// 	if (nn > this.range.high || nn < this.range.low) {
-// 		console.log('that note\'s out of range - this instrument can play from ' + this.range.low + ' to ' + this.range.high);
-// 		if (this.sampler) {
-// 			this.stop()
-// 		};
-// 		return;
-// 	}
-
-// 	if (this.sampler) {
-// 		this.stop();
-// 	}
-// 	var lag = when || 0.1;
-// 	var scale = nn.linlin(this.range.low, this.range.high, 0, this.samples.length - 1);
-// 	var index = Math.round(scale);
-// 	var detune = Math.round((scale - index).linlin(0, this.samples.length - 1, this.range.low, this.range.high) - this.range.low);
-// 	// var path = 'samples/' + this.samples[index] + '.wav';
-// 	var path = this.samples[index];
-// 	console.log({
-// 		'path': path,
-// 		'index': index,
-// 		'detune': detune,
-// 		'scale': scale
-// 	})
-
-// 	this.sampler = new MiniSampler(path, detune, this.audioCtx, this.gainNode, this)
-
-// }
 
 
 
@@ -144,44 +95,14 @@ Instrument.prototype.noteOff = function(nn) {
 }
 
 
-
-Instrument.prototype.stop = function(when) {
-	var self = this;
-	var lag = when || 0.05;
-	this.gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + lag);
-	setTimeout(function() {
-		self.gainNode.gain.exponentialRampToValueAtTime(1, self.audioCtx.currentTime + lag + 0.1);
-	}, lag);
-	this.sampler.stop(lag);
-
-}
-
 Instrument.prototype.hush = function() {
 	for (var nn = this.range.low; nn <= this.range.high; nn++) {
 		for(var ks = 0; ks<this.samples[nn].length; ks++){
-			// if(this.samples[nn][ks].source){
-			// 	this.samples[nn][ks].stop();
-			// }	
 			this.samples[nn][ks].stop();
 		}
 	}
-
 }
 
-
-// Instrument.prototype.gain = function(value_, when) {
-
-// 	var lag = when || 0.1;
-// 	var value = value_;
-
-// 	if (value <= 0) {
-// 		value = 0.000000001
-// 	}
-
-// 	this.gainNode.gain.cancelScheduledValues(this.audioCtx.currentTime);
-// 	this.gainNode.gain.exponentialRampToValueAtTime(value, this.audioCtx.currentTime + lag);
-
-// }
 
 Instrument.prototype.pan = function(value, when) {
 

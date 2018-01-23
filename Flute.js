@@ -8,8 +8,6 @@ var Flute = function(audioContext) {
 	this.numSwitches = 1;
 
 	this.audioCtx = audioContext || new(window.AudioContext || window.webkitAudioContext)();
-	
-
 
 	this.paths = {
 		0: [
