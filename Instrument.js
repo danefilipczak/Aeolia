@@ -33,6 +33,8 @@ var Instrument = function(audioContext, numSwitches) {
 	}
 
 	this.numSamplers = (this.range.high-this.range.low+1)*this.numSwitches;
+	
+	this.buildSamples();
 }
 
 Instrument.prototype.logProgress = function() {

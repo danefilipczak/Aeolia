@@ -37,7 +37,6 @@ var Flute = function(audioContext) {
 	}
 
 	Instrument.call(this, this.audioCtx, this.numSwitches)
-	this.buildSamples();
 }
 
 Flute.prototype = Object.create(Instrument.prototype);

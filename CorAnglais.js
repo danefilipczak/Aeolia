@@ -6,22 +6,35 @@ var CorAnglais = function(audioContext) {
 	}
 
 	this.audioCtx = audioContext || new(window.AudioContext || window.webkitAudioContext)();
+	this.numSwitches = 1;
+
+
+	this.paths = {
+		0: [
+			'cresc/CE3.wav',
+			'cresc/CG3.wav',
+			'cresc/CAS3.wav',
+			'cresc/CCS4.wav',
+			'cresc/CE4.wav',
+			'cresc/CG4.wav',
+			'cresc/CAS4.wav',
+			'cresc/CCS5.wav',
+			'cresc/CE5.wav',
+			'cresc/CG5.wav',
+			'cresc/CAS5.wav',
+		]
+	}
+
+	//add stems
+	for (var key in this.paths) {
+		if (this.paths.hasOwnProperty(key)) { //making sure it doesn't come from the prototype
+			for(var i = 0;i<this.paths[key].length;i++){
+				this.paths[key][i] = 'https://dfilipczak.github.io/Aeolia/samples/corAnglais/' + this.paths[key][i]
+			}
+		}
+	}
+
 	Instrument.call(this, this.audioCtx)
-
-
-	this.samples = [
-		'samples/corAnglais/cresc/CE3.wav',
-		'samples/corAnglais/cresc/CG3.wav',
-		'samples/corAnglais/cresc/CAS3.wav',
-		'samples/corAnglais/cresc/CCS4.wav',
-		'samples/corAnglais/cresc/CE4.wav',
-		'samples/corAnglais/cresc/CG4.wav',
-		'samples/corAnglais/cresc/CAS4.wav',
-		'samples/corAnglais/cresc/CCS5.wav',
-		'samples/corAnglais/cresc/CE5.wav',
-		'samples/corAnglais/cresc/CG5.wav',
-		'samples/corAnglais/cresc/CAS5.wav',
-	]
 }
 
 CorAnglais.prototype = Object.create(Instrument.prototype);

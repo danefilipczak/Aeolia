@@ -6,21 +6,34 @@ var ContraBassoon = function(audioContext) {
 	}
 
 	this.audioCtx = audioContext || new(window.AudioContext || window.webkitAudioContext)();
+	this.numSwitches = 1;
+
+
+	this.paths = {
+		0: [
+			'cresc/AS0.mp3',
+			'cresc/CS1.mp3',
+			'cresc/E1.mp3',
+			'cresc/G1.mp3',
+			'cresc/AS1.mp3',
+			'cresc/CS2.mp3',
+			'cresc/E2.mp3',
+			'cresc/G2.mp3',
+			'cresc/AS2.mp3',
+			'cresc/CS3.mp3'
+		]
+	}
+
+	//add stems
+	for (var key in this.paths) {
+		if (this.paths.hasOwnProperty(key)) { //making sure it doesn't come from the prototype
+			for(var i = 0;i<this.paths[key].length;i++){
+				this.paths[key][i] = 'https://dfilipczak.github.io/Aeolia/samples/contraBassoon/' + this.paths[key][i]
+			}
+		}
+	}
+
 	Instrument.call(this, this.audioCtx)
-
-
-	this.samples = [
-		'samples/contraBassoon/cresc/AS0.mp3',
-		'samples/contraBassoon/cresc/CS1.mp3',
-		'samples/contraBassoon/cresc/E1.mp3',
-		'samples/contraBassoon/cresc/G1.mp3',
-		'samples/contraBassoon/cresc/AS1.mp3',
-		'samples/contraBassoon/cresc/CS2.mp3',
-		'samples/contraBassoon/cresc/E2.mp3',
-		'samples/contraBassoon/cresc/G2.mp3',
-		'samples/contraBassoon/cresc/AS2.mp3',
-		'samples/contraBassoon/cresc/CS3.mp3'
-	]
 }
 
 ContraBassoon.prototype = Object.create(Instrument.prototype);
