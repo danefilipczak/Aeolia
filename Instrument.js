@@ -139,6 +139,24 @@ Instrument.prototype.stop = function(when) {
 
 }
 
+Instrument.prototype.hush = function() {
+	//turn everything off;
+	// this.samples.forEach(function(nn){
+	// 	nn.forEach(function(ks){
+	// 		ks.stop();
+	// 	})
+	// })
+	for (var i = this.range.low; i <= this.range.high; i++) {
+		for(var j = 0; j<this.samples[i].length; j++){
+			console.log([i, j])
+			if(this.samples[i][j].source){
+				this.samples[i][j].stop();
+			}	
+		}
+	}
+
+}
+
 
 Instrument.prototype.gain = function(value_, when) {
 

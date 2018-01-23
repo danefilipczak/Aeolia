@@ -21,8 +21,9 @@ var MiniSampler = function(path_, detune, audioContext, gainNode_, parent_) {
 }
 
 MiniSampler.prototype.getData = function() {
-	var self = this;	
-	this.source = this.audioCtx.createBufferSource();
+	var self = this;
+	this.source;
+	this.buffer;
 	var request = new XMLHttpRequest();
 	// console.log(self.path)
 	// console.log([self.path, 'requestpath'])
@@ -36,16 +37,7 @@ MiniSampler.prototype.getData = function() {
 		var audioData = request.response;
 
 		self.audioCtx.decodeAudioData(audioData, function(buffer) {
-				self.source.buffer = buffer;
-				// console.log(1 + (self.twelfthRootOfTwo * self.detune))
-				self.source.playbackRate.value = midiRatio(self.detune);
-				self.source.connect(self.gainNode);
-				self.source.loop = true;
-				// self.source.loopStart = 1;
-				// self.source.loopEnd = 3;
-				self.source.onended = function(event){
-					console.log('end')
-				}
+				self.buffer = buffer;
 				self.parent.logProgress();
 			},
 
@@ -58,18 +50,34 @@ MiniSampler.prototype.getData = function() {
 	request.send();
 }
 
-MiniSampler.prototype.play = function(){
+MiniSampler.prototype.play = function() {
+	var self = this;
+	if(this.source){
+		this.stop();
+	}
+	this.source = this.audioCtx.createBufferSource();
+	self.source.buffer = this.buffer;
+	// console.log(1 + (self.twelfthRootOfTwo * self.detune))
+	self.source.playbackRate.value = midiRatio(self.detune);
+	self.source.connect(self.gainNode);
+	self.source.loop = true;
+	// self.source.loopStart = 1;
+	// self.source.loopEnd = 3;
+	self.source.onended = function(event) {
+		console.log('end')
+	}
+
 	this.source.start();
 }
 
-MiniSampler.prototype.stop = function(when_){
+MiniSampler.prototype.stop = function(when_) {
 	var when = when_ || 0;
 	this.source.stop(this.audioCtx.currentTime + when);
 }
 
 
-function midiRatio(nn){
-	return Math.pow(Math.pow(2, nn), 1/12);
+function midiRatio(nn) {
+	return Math.pow(Math.pow(2, nn), 1 / 12);
 }
 
 
@@ -77,31 +85,31 @@ function midiRatio(nn){
 // window.onload = function() {
 
 
-	// source;
+// source;
 
-	// var pre = document.querySelector('pre');
-	// var myScript = document.querySelector('script');
-	// var play = document.querySelector('.play');
-	// var stop = document.querySelector('.stop');
-
-
-	// var playbackControl = document.querySelector('.playback-rate-control');
-	// var playbackValue = document.querySelector('.playback-rate-value');
-	// playbackControl.setAttribute('disabled', 'disabled');
-	// var loopstartControl = document.querySelector('.loopstart-control');
-	// var loopstartValue = document.querySelector('.loopstart-value');
-	// loopstartControl.setAttribute('disabled', 'disabled');
-	// var loopendControl = document.querySelector('.loopend-control');
-	// var loopendValue = document.querySelector('.loopend-value');
-	// loopendControl.setAttribute('disabled', 'disabled');
-
-	// use XHR to load an audio track, and
-	// decodeAudioData to decode it and stick it in a buffer.
-	// Then we put the buffer into the source
+// var pre = document.querySelector('pre');
+// var myScript = document.querySelector('script');
+// var play = document.querySelector('.play');
+// var stop = document.querySelector('.stop');
 
 
+// var playbackControl = document.querySelector('.playback-rate-control');
+// var playbackValue = document.querySelector('.playback-rate-value');
+// playbackControl.setAttribute('disabled', 'disabled');
+// var loopstartControl = document.querySelector('.loopstart-control');
+// var loopstartValue = document.querySelector('.loopstart-value');
+// loopstartControl.setAttribute('disabled', 'disabled');
+// var loopendControl = document.querySelector('.loopend-control');
+// var loopendValue = document.querySelector('.loopend-value');
+// loopendControl.setAttribute('disabled', 'disabled');
 
-	// wire up buttons to stop and play audio
+// use XHR to load an audio track, and
+// decodeAudioData to decode it and stick it in a buffer.
+// Then we put the buffer into the source
+
+
+
+// wire up buttons to stop and play audio
 
 // 	play.onclick = function() {
 // 		getData();
