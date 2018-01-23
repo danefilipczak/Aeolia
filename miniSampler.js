@@ -9,8 +9,12 @@ var MiniSampler = function(path_, detune, audioContext, gainNode_, parent_) {
 	this.audioCtx = audioContext;
 	this.gainNode = gainNode_;
 	this.getData();
+	
 	// this.source.start();
 	this.detune = detune || 0;
+
+	this.gainNode = this.audioCtx.createGain();
+	this.gainNode.connect(this.parent.panNode);
 
 
 
@@ -35,10 +39,11 @@ MiniSampler.prototype.getData = function() {
 
 	request.onload = function() {
 		var audioData = request.response;
+		self.parent.logProgress();
 
 		self.audioCtx.decodeAudioData(audioData, function(buffer) {
 				self.buffer = buffer;
-				self.parent.logProgress();
+				
 			},
 
 			function(e) {
@@ -67,12 +72,17 @@ MiniSampler.prototype.play = function() {
 		console.log('end')
 	}
 
+	this.gainNode.gain.exponentialRampToValueAtTime(this.parent.gain, this.audioCtx.currentTime + this.parent.attack);
 	this.source.start();
 }
 
-MiniSampler.prototype.stop = function(when_) {
-	var when = when_ || 0;
-	this.source.stop(this.audioCtx.currentTime + when);
+MiniSampler.prototype.stop = function() {
+	// var when = when_ || 0;
+	if(this.source){
+		this.source.stop(this.audioCtx.currentTime + this.parent.release);
+		this.gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + this.parent.release);
+	}
+	
 }
 
 

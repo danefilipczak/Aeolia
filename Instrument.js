@@ -15,11 +15,12 @@ var Instrument = function(audioContext, numSwitches) {
 	this.panNode = this.audioCtx.createStereoPanner();
 	this.panNode.connect(this.audioCtx.destination);
 
-	this.gainNode = this.audioCtx.createGain();
-	this.gainNode.connect(this.panNode);
 
 	this.progress = 0;
+	this.gain = 1;
 
+	this.attack = 1;
+	this.release = 1;
 
 	this.switch = 0; //current keyswitch
 	this.samples = new Array(127);
@@ -28,12 +29,29 @@ var Instrument = function(audioContext, numSwitches) {
 	}
 	this.buildSamples();
 
+	this.numSamplers = (this.range.high-this.range.low)*this.numSwitches;
+
 
 
 }
 
 Instrument.prototype.logProgress = function() {
 	this.progress++;
+	console.log(this.progress)
+	var progress = this.progress/this.numSamplers;
+	this.onProgress(progress);
+	if(progress>=1){
+		this.onLoad();
+	}
+}
+
+Instrument.prototype.onProgress = function(progress){
+	console.log(progress)
+}
+
+Instrument.prototype.onLoad = function(){
+	///
+	console.log('loaded')
 }
 
 Instrument.prototype.buildSamples = function() {
@@ -113,15 +131,15 @@ Instrument.prototype.noteOn = function(nn) {
 	this.samples[nn][this.switch].play()
 }
 
-Instrument.prototype.noteOff = function(nn, when) {
+Instrument.prototype.noteOff = function(nn) {
 	var self = this;
-	var lag = when || 0.05;
-	this.gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + lag);
-	setTimeout(function() {
-		self.gainNode.gain.exponentialRampToValueAtTime(1, self.audioCtx.currentTime + lag + 0.1);
-	}, lag);
+	// var lag = when || 0.05;
+	
+	// setTimeout(function() {
+	// 	self.gainNode.gain.exponentialRampToValueAtTime(1, self.audioCtx.currentTime + lag + 0.1);
+	// }, lag);
 	this.samples[nn].forEach(function(s) {
-		s.stop(lag);
+		s.stop();
 		// s = new
 	})
 }
@@ -140,18 +158,12 @@ Instrument.prototype.stop = function(when) {
 }
 
 Instrument.prototype.hush = function() {
-	//turn everything off;
-	// this.samples.forEach(function(nn){
-	// 	nn.forEach(function(ks){
-	// 		ks.stop();
-	// 	})
-	// })
-	for (var i = this.range.low; i <= this.range.high; i++) {
-		for(var j = 0; j<this.samples[i].length; j++){
-			console.log([i, j])
-			if(this.samples[i][j].source){
-				this.samples[i][j].stop();
-			}	
+	for (var nn = this.range.low; nn <= this.range.high; nn++) {
+		for(var ks = 0; ks<this.samples[nn].length; ks++){
+			// if(this.samples[nn][ks].source){
+			// 	this.samples[nn][ks].stop();
+			// }	
+			this.samples[nn][ks].stop();
 		}
 	}
 
